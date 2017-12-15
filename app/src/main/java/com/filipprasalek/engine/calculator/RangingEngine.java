@@ -2,6 +2,7 @@ package com.filipprasalek.engine.calculator;
 
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.estimote.coresdk.observation.region.RegionUtils;
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
@@ -9,6 +10,7 @@ import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
 import com.filipprasalek.R;
 import com.filipprasalek.engine.domain.BeaconStatus;
+import com.filipprasalek.engine.domain.Point;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -17,11 +19,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import static android.R.layout.simple_list_item_1;
+import static com.filipprasalek.engine.calculator.BeaconConfiguration.createBeaconMapping;
 import static java.lang.String.format;
 
 public class RangingEngine {
 
-    public static final Map<String, BeaconStatus> placesByBeacons = BeaconConfiguration.createBeaconMapping();
+    public static final Map<String, BeaconStatus> placesByBeacons = createBeaconMapping();
+    private static List<Beacon> beacons = new ArrayList<>();
+
 
     private static final String UU_ID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String DECIMAL_FORMAT = "##.##";
@@ -32,7 +37,6 @@ public class RangingEngine {
     private BeaconManager beaconManager;
     private BeaconRegion beaconRegion;
 
-    private static List<Beacon> beacons = new ArrayList<>();
 
     // TODO: zmienie nazwe
     private String detectedBeacons(Beacon beacon, double beaconDistance) {
@@ -63,6 +67,14 @@ public class RangingEngine {
                     listView.setAdapter(new CustomArrayAdapter(
                             activity.getApplicationContext(), simple_list_item_1, places));
 
+                    TextView textViewX = activity.findViewById(R.id.xCoordTextView);
+                    TextView textViewY = activity.findViewById(R.id.yCoordTextView);
+
+                    Point userPosition = MappingSexing.estimateUserPosition(beacons,placesByBeacons);
+
+                    textViewX.setText("" + userPosition.getX());
+                    textViewY.setText("" + userPosition.getY());
+
                 }
             }
         });
@@ -75,8 +87,9 @@ public class RangingEngine {
             double beaconDistance = getBeaconDistance(beacon);
             places.add(detectedBeacons(beacon, beaconDistance));
         }
+
         return places;
-    }
+   }
 
     // TODO: zmiana nazwy
     private double getDistance(int rssi, int txPower) {
