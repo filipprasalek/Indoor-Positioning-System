@@ -21,7 +21,7 @@ import static java.lang.String.format;
 
 public class RangingEngine {
 
-    private static final Map<String, String> placesByBeacons = createBeaconMapping();
+    public static final Map<String, BeaconStatus> placesByBeacons = createBeaconMapping();
 
     private static final String UU_ID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String DECIMAL_FORMAT = "##.##";
@@ -32,6 +32,9 @@ public class RangingEngine {
     private BeaconManager beaconManager;
     private BeaconRegion beaconRegion;
 
+    private static List<Beacon> beacons = new ArrayList<>();
+
+    // TODO: zmienie nazwe
     private String detectedBeacons(Beacon beacon, double beaconDistance) {
         String beaconKey = format("%d:%d", beacon.getMajor(), beacon.getMinor());
         if (placesByBeacons.containsKey(beaconKey)) {
@@ -40,9 +43,6 @@ public class RangingEngine {
         return "No beacons found :C";
     }
 
-    private double getDistance(int rssi, int txPower) {
-        return Math.pow(10d, ((double) txPower - rssi) / (10 * 2.2));
-    }
 
     public void listen(final AppCompatActivity activity) {
         beaconRegion = new BeaconRegion("ranged region",
@@ -58,6 +58,7 @@ public class RangingEngine {
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     List<String> places = buildDetectedBeacons(list);
+                    beacons = new ArrayList<>(list);
 
                     listView.setAdapter(new CustomArrayAdapter(
                             activity.getApplicationContext(), simple_list_item_1, places));
@@ -71,10 +72,19 @@ public class RangingEngine {
         List<String> places = new ArrayList<>();
         for (Beacon beacon : list) {
             //double beaconDistance = getDistance(beacon.getRssi(),beacon.getMeasuredPower());
-            double beaconDistance = RegionUtils.computeAccuracy(beacon);
+            double beaconDistance = getBeaconDistance(beacon);
             places.add(detectedBeacons(beacon, beaconDistance));
         }
         return places;
+    }
+
+    // TODO: zmiana nazwy
+    private double getDistance(int rssi, int txPower) {
+        return Math.pow(10d, ((double) txPower - rssi) / (10 * 2.2));
+    }
+
+    private double getBeaconDistance(Beacon beacon) {
+        return RegionUtils.computeAccuracy(beacon);
     }
 
     public void startRanging() {
