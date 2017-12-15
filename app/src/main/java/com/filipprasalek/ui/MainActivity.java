@@ -1,4 +1,4 @@
-package com.filipprasalek;
+package com.filipprasalek.ui;
 
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +14,7 @@ import com.estimote.coresdk.observation.region.RegionUtils;
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
 import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
+import com.filipprasalek.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
-
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
