@@ -11,25 +11,23 @@ import com.filipprasalek.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static android.R.layout.simple_list_item_1;
+import static com.filipprasalek.engine.BeaconConfiguration.createBeaconMapping;
 import static java.lang.String.format;
 
 public class RangingEngine {
 
-    private static final Map<String, String> placesByBeacons;
-    private static final String id = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+    private static final Map<String, String> placesByBeacons = createBeaconMapping();
 
-    static {
-        placesByBeacons = new HashMap<>();
-        placesByBeacons.put("44099:58515", "beetroot");
-        placesByBeacons.put("21883:57819", "candy");
-        placesByBeacons.put("7191:40932", "lemon");
-    }
+    private static final String UU_ID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+    private static final String DECIMAL_FORMAT = "##.##";
+
+    private static final int SCAN_PERIOD_MILIS = 200;
+    private static final int WAIT_TIME_MILLIS = 2000;
 
     private BeaconManager beaconManager;
     private BeaconRegion beaconRegion;
@@ -37,7 +35,7 @@ public class RangingEngine {
     private String detectedBeacons(Beacon beacon, double beaconDistance) {
         String beaconKey = format("%d:%d", beacon.getMajor(), beacon.getMinor());
         if (placesByBeacons.containsKey(beaconKey)) {
-            return placesByBeacons.get(beaconKey) + ": " + new DecimalFormat("##.##").format(beaconDistance) + "m";
+            return placesByBeacons.get(beaconKey) + ": " + new DecimalFormat(DECIMAL_FORMAT).format(beaconDistance) + "m";
         }
         return "No beacons found :C";
     }
@@ -48,10 +46,11 @@ public class RangingEngine {
 
     public void listen(final AppCompatActivity activity) {
         beaconRegion = new BeaconRegion("ranged region",
-                UUID.fromString(id), null, null);
+                UUID.fromString(UU_ID), null, null);
 
         beaconManager = new BeaconManager(activity);
-        beaconManager.setBackgroundScanPeriod(200, 2000);
+
+        beaconManager.setBackgroundScanPeriod(SCAN_PERIOD_MILIS, WAIT_TIME_MILLIS);
 
         final ListView listView = activity.findViewById(R.id.detectetBeaconsListView);
         beaconManager.setRangingListener(new BeaconManager.BeaconRangingListener() {
