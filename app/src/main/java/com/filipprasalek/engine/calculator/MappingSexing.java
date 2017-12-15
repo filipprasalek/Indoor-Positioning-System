@@ -1,8 +1,9 @@
-package com.filipprasalek.engine;
+package com.filipprasalek.engine.calculator;
 
-import com.estimote.coresdk.observation.region.Region;
-import com.estimote.coresdk.observation.region.RegionUtils;
 import com.estimote.coresdk.recognition.packets.Beacon;
+import com.filipprasalek.engine.domain.BeaconStatus;
+import com.filipprasalek.engine.domain.Point;
+
 import java.util.List;
 import java.util.Map;
 

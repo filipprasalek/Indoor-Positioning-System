@@ -1,4 +1,4 @@
-package com.filipprasalek.engine;
+package com.filipprasalek.engine.calculator;
 
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
@@ -8,6 +8,7 @@ import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
 import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
 import com.filipprasalek.R;
+import com.filipprasalek.engine.domain.BeaconStatus;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -16,12 +17,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import static android.R.layout.simple_list_item_1;
-import static com.filipprasalek.engine.BeaconConfiguration.createBeaconMapping;
 import static java.lang.String.format;
 
 public class RangingEngine {
 
-    public static final Map<String, BeaconStatus> placesByBeacons = createBeaconMapping();
+    public static final Map<String, BeaconStatus> placesByBeacons = BeaconConfiguration.createBeaconMapping();
 
     private static final String UU_ID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String DECIMAL_FORMAT = "##.##";

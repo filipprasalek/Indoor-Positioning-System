@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.filipprasalek.R;
-import com.filipprasalek.engine.RangingEngine;
+import com.filipprasalek.engine.calculator.RangingEngine;
 
 
 public class MainActivity extends AppCompatActivity {

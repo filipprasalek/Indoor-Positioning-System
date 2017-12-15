@@ -1,4 +1,4 @@
-package com.filipprasalek.engine;
+package com.filipprasalek.engine.domain;
 
 public class Point {
 
