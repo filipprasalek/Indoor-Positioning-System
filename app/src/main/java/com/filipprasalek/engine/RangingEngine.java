@@ -1,12 +1,7 @@
 package com.filipprasalek.engine;
 
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.estimote.coresdk.observation.region.RegionUtils;
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
@@ -21,9 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.R.layout.simple_list_item_1;
+import static java.lang.String.format;
+
 public class RangingEngine {
 
     private static final Map<String, String> placesByBeacons;
+    private static final String id = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
 
     static {
         placesByBeacons = new HashMap<>();
@@ -36,7 +35,7 @@ public class RangingEngine {
     private BeaconRegion beaconRegion;
 
     private String detectedBeacons(Beacon beacon, double beaconDistance) {
-        String beaconKey = String.format("%d:%d", beacon.getMajor(), beacon.getMinor());
+        String beaconKey = format("%d:%d", beacon.getMajor(), beacon.getMinor());
         if (placesByBeacons.containsKey(beaconKey)) {
             return placesByBeacons.get(beaconKey) + ": " + new DecimalFormat("##.##").format(beaconDistance) + "m";
         }
@@ -47,9 +46,9 @@ public class RangingEngine {
         return Math.pow(10d, ((double) txPower - rssi) / (10 * 2.2));
     }
 
-    public void listen(final AppCompatActivity activity){
+    public void listen(final AppCompatActivity activity) {
         beaconRegion = new BeaconRegion("ranged region",
-                UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
+                UUID.fromString(id), null, null);
 
         beaconManager = new BeaconManager(activity);
         beaconManager.setBackgroundScanPeriod(200, 2000);
@@ -59,31 +58,27 @@ public class RangingEngine {
             @Override
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
                 if (!list.isEmpty()) {
-                    List<String> places = new ArrayList<>();
-                    for (Beacon beacon : list) {
-                        //double beaconDistance = getDistance(beacon.getRssi(),beacon.getMeasuredPower());
-                        double beaconDistance = RegionUtils.computeAccuracy(beacon);
-                        places.add(detectedBeacons(beacon, beaconDistance));
-                    }
+                    List<String> places = buildDetectedBeacons(list);
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity.getApplicationContext(), android.R.layout.simple_list_item_1, places){
-                        @Override
-                        public View getView(int position, View convertView, ViewGroup parent){
+                    listView.setAdapter(new CustomArrayAdapter(
+                            activity.getApplicationContext(), simple_list_item_1, places));
 
-                            View view = super.getView(position, convertView, parent);
-                            TextView tv = (TextView) view.findViewById(android.R.id.text1);
-                            tv.setTextColor(Color.BLACK);
-
-                            return view;
-                        }
-                    };
-                    listView.setAdapter(adapter);
                 }
             }
         });
     }
 
-    public void startRanging(){
+    private List<String> buildDetectedBeacons(List<Beacon> list) {
+        List<String> places = new ArrayList<>();
+        for (Beacon beacon : list) {
+            //double beaconDistance = getDistance(beacon.getRssi(),beacon.getMeasuredPower());
+            double beaconDistance = RegionUtils.computeAccuracy(beacon);
+            places.add(detectedBeacons(beacon, beaconDistance));
+        }
+        return places;
+    }
+
+    public void startRanging() {
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
@@ -92,7 +87,7 @@ public class RangingEngine {
         });
     }
 
-    public void stopRanging(){
+    public void stopRanging() {
         beaconManager.stopRanging(beaconRegion);
     }
 
