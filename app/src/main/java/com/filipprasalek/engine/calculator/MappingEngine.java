@@ -8,7 +8,7 @@ import com.filipprasalek.engine.domain.Point;
 import java.util.List;
 import java.util.Map;
 
-public class MappingSexing {
+public class MappingEngine {
 
     private static double calculateBeaconWeight(double distanceToBeacon) {
         return (1 / Math.pow(distanceToBeacon, 2));

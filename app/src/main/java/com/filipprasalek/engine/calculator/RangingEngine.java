@@ -36,13 +36,14 @@ public class RangingEngine {
 
     private BeaconManager beaconManager;
     private BeaconRegion beaconRegion;
+    private DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
 
 
     // TODO: zmienie nazwe
     private String detectedBeacons(Beacon beacon, double beaconDistance) {
         String beaconKey = format("%d:%d", beacon.getMajor(), beacon.getMinor());
         if (placesByBeacons.containsKey(beaconKey)) {
-            return placesByBeacons.get(beaconKey) + ": " + new DecimalFormat(DECIMAL_FORMAT).format(beaconDistance) + "m";
+            return placesByBeacons.get(beaconKey) + ": " + decimalFormat.format(beaconDistance) + "m";
         }
         return "No beacons found :C";
     }
@@ -67,17 +68,21 @@ public class RangingEngine {
                     listView.setAdapter(new CustomArrayAdapter(
                             activity.getApplicationContext(), simple_list_item_1, places));
 
-                    TextView textViewX = activity.findViewById(R.id.xCoordTextView);
-                    TextView textViewY = activity.findViewById(R.id.yCoordTextView);
-
-                    Point userPosition = MappingSexing.estimateUserPosition(beacons,placesByBeacons);
-
-                    textViewX.setText("" + userPosition.getX());
-                    textViewY.setText("" + userPosition.getY());
+                    setTextViews(activity);
 
                 }
             }
         });
+    }
+
+    private void setTextViews(AppCompatActivity activity) {
+        TextView textViewX = activity.findViewById(R.id.xCoordTextView);
+        TextView textViewY = activity.findViewById(R.id.yCoordTextView);
+
+        Point userPosition = MappingEngine.estimateUserPosition(beacons,placesByBeacons);
+
+        textViewX.setText(String.format("%s", decimalFormat.format(userPosition.getX())));
+        textViewY.setText(String.format("%s", decimalFormat.format(userPosition.getX())));
     }
 
     private List<String> buildDetectedBeacons(List<Beacon> list) {
