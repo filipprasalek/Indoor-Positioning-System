@@ -1,6 +1,6 @@
-package com.filipprasalek.engine.domain;
+package com.filipprasalek.domain;
 
-public interface BeaconStatus {
+public interface BeaconStatusInterface {
     String getName();
     String getMM();
     double getX();

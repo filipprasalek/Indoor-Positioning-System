@@ -1,4 +1,4 @@
-package com.filipprasalek.engine.calculator;
+package com.filipprasalek.engine;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
