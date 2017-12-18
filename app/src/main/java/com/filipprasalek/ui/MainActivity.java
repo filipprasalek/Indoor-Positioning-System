@@ -1,7 +1,11 @@
 package com.filipprasalek.ui;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.filipprasalek.R;
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -36,4 +41,27 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         rangingEngine.stopRanging();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.detect_list_view:
+                return true;
+            case R.id.user_position_view:
+                Intent intent = new Intent(this, UserPositionActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
