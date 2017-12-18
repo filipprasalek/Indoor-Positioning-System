@@ -23,7 +23,7 @@ public class BeaconStatusFactory {
         }
     }
 
-    private static BeaconStatusInterface getLemon() {
+    private static BeaconStatusInterface getBeetrot() {
         BeaconStatus beacon = new BeaconStatus();
         beacon.setName(BEETROT);
         beacon.setMm(BEETROT_MM);
@@ -41,7 +41,7 @@ public class BeaconStatusFactory {
         return beacon;
     }
 
-    private static BeaconStatusInterface getBeetrot() {
+    private static BeaconStatusInterface getLemon() {
         BeaconStatus beacon = new BeaconStatus();
         beacon.setName(LEMON);
         beacon.setMm(LEMON_MM);
