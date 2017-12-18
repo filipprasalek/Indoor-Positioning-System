@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/list_menu"
+        android:icon="@drawable/ic_menu_black_48dp"
+        android:title="@string/list_menu"
+        app:showAsAction="always">
+        <!-- "list_menu" submenu -->
+        <menu>
+            <item
+                android:id="@+id/detect_list_view"
+                android:title="@string/detect_beacons_view" />
+            <item
+                android:id="@+id/user_position_view"
+                android:title="@string/user_position_view" />
+        </menu>
+    </item>
+
+</menu>
