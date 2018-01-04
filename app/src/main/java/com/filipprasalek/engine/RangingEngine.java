@@ -25,15 +25,12 @@ import static java.lang.String.format;
 public class RangingEngine {
 
     private static final Map<String, BeaconStatusInterface> placesByBeacons = BeaconConfiguration.createBeaconMapping();
-    private static List<Beacon> beacons = new ArrayList<>();
-
     private static final String UU_ID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final String DECIMAL_FORMAT = "##.##";
     private static final String REGION_TYPE = "ranged region";
-
     private static final int WAIT_TIME_MILLIS = 2000;
     private static final int SCAN_PERIOD_MILIS = 200;
-
+    private static List<Beacon> beacons = new ArrayList<>();
     private BeaconManager beaconManager;
     private BeaconRegion beaconRegion;
     private DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
@@ -99,6 +96,11 @@ public class RangingEngine {
             }
         });
     }
+
+    public Point getUserPosition() {
+        return MappingEngine.estimateUserPosition(beacons, placesByBeacons);
+    }
+
 
     private void setTextViews(AppCompatActivity activity) {
         TextView textViewX = activity.findViewById(R.id.xCoordTextView);
