@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.filipprasalek.R;
@@ -17,9 +18,9 @@ import com.filipprasalek.engine.RangingEngine;
 
 public class UserPositionActivity extends AppCompatActivity {
 
-    RangingEngine rangingEngine;
     static final int MAX_METRES_WIDTH = 5;
     static final int MAX_METRES_HEIGHT = 7;
+    RangingEngine rangingEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,46 +41,28 @@ public class UserPositionActivity extends AppCompatActivity {
         constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 0) + (widthMeter), (heightMeter * 0) + (heightMeter), "lemon"));
 
         rangingEngine.mapUserPosition(this, widthMeter, heightMeter);
-
-
-//        observer.addOnGlobalLayoutListener(
-//                new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//
-//                        // TODO: foreach beacon from beaconsList
-//                        float widthMeter = constraintLayout.getWidth() / MAX_METRES_WIDTH;
-//                        float heightMeter = constraintLayout.getHeight() / MAX_METRES_HEIGHT;
-//
-//                        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 2.6f) + (widthMeter) , (heightMeter * 0) +(heightMeter), "beetroot"));
-//                        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 0) + (widthMeter), (heightMeter * 5) + (heightMeter), "candy"));
-//                        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 0) + (widthMeter), (heightMeter * 0) + (heightMeter), "lemon"));
-//
-//                        rangingEngine.mapUserPosition(trzebaToWywalic,userPosition, widthMeter, heightMeter);
-//
-//                        // TODO: take values from dictionary
-//
-//                        constraintLayout.addView(userPosition);
-//                    }
-//                });
+        this.findViewById(R.id.send_button).setOnClickListener(new HandleSendButtonClick());
 
     }
 
-    private class UserPosition extends View {
-        Paint paint = new Paint();
-        private float x;
-        private float y;
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        public UserPosition(Context context, float x, float y) {
-            super(context);
-            this.x = x;
-            this.y = y;
-        }
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+        rangingEngine.startRanging();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        rangingEngine.stopRanging();
+    }
+
+    private class HandleSendButtonClick implements View.OnClickListener {
         @Override
-        public void onDraw(Canvas canvas) {
-            paint.setColor(Color.WHITE);
-            canvas.drawRect(x, y, x + 20, y + 20, paint);
+        public void onClick(View view) {
+            Toast.makeText(UserPositionActivity.this, "Sent", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -113,20 +96,6 @@ public class UserPositionActivity extends AppCompatActivity {
             }
             canvas.drawCircle(x, y, 10, paint);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        SystemRequirementsChecker.checkWithDefaultDialogs(this);
-        rangingEngine.startRanging();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        rangingEngine.stopRanging();
     }
 
 }
