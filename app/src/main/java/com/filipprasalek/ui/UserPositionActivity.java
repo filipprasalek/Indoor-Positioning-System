@@ -11,12 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.filipprasalek.R;
+import com.filipprasalek.engine.RangingEngine;
 
 public class UserPositionActivity extends AppCompatActivity {
 
-    static final int MAX_METRES_WIDTH = 15;
-    static final int MAX_METRES_HEIGHT = 20;
+    RangingEngine rangingEngine;
+    static final int MAX_METRES_WIDTH = 5;
+    static final int MAX_METRES_HEIGHT = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,31 +27,42 @@ public class UserPositionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_position);
         final ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.room);
 
+
+        rangingEngine = new RangingEngine();
+
+
         final ViewTreeObserver observer = constraintLayout.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        //foreach beacon from beaconsList
-                        float widthMeter = constraintLayout.getWidth() / MAX_METRES_WIDTH;
-                        float heightMeter = constraintLayout.getHeight() / MAX_METRES_HEIGHT;
+        float widthMeter = 144f;
+        float heightMeter = 149f;
 
-                        constraintLayout.addView(new BeaconDot(getApplicationContext(), widthMeter * 2, heightMeter * 2, "beetroot"));
-                        constraintLayout.addView(new BeaconDot(getApplicationContext(), widthMeter * 6, heightMeter * 6, "candy"));
-                        constraintLayout.addView(new BeaconDot(getApplicationContext(), widthMeter * 10, heightMeter * 10, "lemon"));
-                        constraintLayout.addView(new UserPosition(getApplicationContext(), widthMeter * 5, heightMeter * 5));
-                    }
+        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 2.6f) + (widthMeter) , (heightMeter * 0) +(heightMeter), "beetroot"));
+        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 0) + (widthMeter), (heightMeter * 5) + (heightMeter), "candy"));
+        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 0) + (widthMeter), (heightMeter * 0) + (heightMeter), "lemon"));
 
-                });
-        this.findViewById(R.id.button).setOnClickListener(new HandleSendButtonClick());
-    }
+        rangingEngine.mapUserPosition(this, widthMeter, heightMeter);
 
 
-    private class HandleSendButtonClick implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
+//        observer.addOnGlobalLayoutListener(
+//                new ViewTreeObserver.OnGlobalLayoutListener() {
+//                    @Override
+//                    public void onGlobalLayout() {
+//
+//                        // TODO: foreach beacon from beaconsList
+//                        float widthMeter = constraintLayout.getWidth() / MAX_METRES_WIDTH;
+//                        float heightMeter = constraintLayout.getHeight() / MAX_METRES_HEIGHT;
+//
+//                        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 2.6f) + (widthMeter) , (heightMeter * 0) +(heightMeter), "beetroot"));
+//                        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 0) + (widthMeter), (heightMeter * 5) + (heightMeter), "candy"));
+//                        constraintLayout.addView(new BeaconDot(getApplicationContext(), (widthMeter * 0) + (widthMeter), (heightMeter * 0) + (heightMeter), "lemon"));
+//
+//                        rangingEngine.mapUserPosition(trzebaToWywalic,userPosition, widthMeter, heightMeter);
+//
+//                        // TODO: take values from dictionary
+//
+//                        constraintLayout.addView(userPosition);
+//                    }
+//                });
 
-        }
     }
 
     private class UserPosition extends View {
@@ -99,6 +113,20 @@ public class UserPositionActivity extends AppCompatActivity {
             }
             canvas.drawCircle(x, y, 10, paint);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+        rangingEngine.startRanging();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        rangingEngine.stopRanging();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.filipprasalek.engine;
 
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -70,6 +71,30 @@ public class RangingEngine {
                             activity.getApplicationContext(), simple_list_item_1, places));
 
                     setTextViews(activity);
+                }
+            }
+        });
+    }
+
+    public void mapUserPosition(final AppCompatActivity activity, final float metersX, final float metersY){
+        beaconRegion = new BeaconRegion(REGION_TYPE,
+                UUID.fromString(UU_ID), null, null);
+
+        beaconManager = new BeaconManager(activity);
+
+        beaconManager.setBackgroundScanPeriod(SCAN_PERIOD_MILIS, WAIT_TIME_MILLIS);
+        beaconManager.setRangingListener(new BeaconManager.BeaconRangingListener() {
+            @Override
+            public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
+                if (!list.isEmpty()) {
+
+                    beacons = new ArrayList<>(list);
+
+                    Point userPosition = MappingEngine.estimateUserPosition(beacons,placesByBeacons);
+                    View user = activity.findViewById(R.id.userPosition);
+                    user.setX(((float)userPosition.getX() * metersX) + metersX);
+                    user.setY(((float)userPosition.getY() * metersY) + metersY);
+
                 }
             }
         });
